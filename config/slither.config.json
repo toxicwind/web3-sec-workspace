@@ -1,0 +1,8 @@
+{
+  "detectors_to_run": "all",
+  "detectors_to_exclude": "naming-convention,similar-names",
+  "solc_remaps": [],
+  "filter_paths": "node_modules|test|mocks|lib|dependencies",
+  "solc_disable_warnings": false,
+  "disable_color": false
+}

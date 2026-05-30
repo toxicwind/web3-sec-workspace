@@ -1,0 +1,80 @@
+# Sovereign Web3 Security Workspace — 2026 .gitignore
+
+# Reports & artifacts (never commit findings from private audits)
+reports/
+logs/
+*.jsonl
+*.sarif
+aderyn_report.md
+slither.json
+solidityguard.json
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn.lock
+package-lock.json
+dist/
+build/
+
+# Foundry / Hardhat / Truffle
+cache/
+out/
+artifacts/
+typechain/
+typechain-types/
+deployments/
+broadcast/
+
+# Rust / Cargo
+target/
+**/*.rs.bk
+Cargo.lock
+
+# IDE & OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Secrets (never ever)
+.env
+.env.*
+*.pem
+*.key
+secrets/
+.grok/.secrets
+
+# Temp & large binaries
+*.zip
+*.tar.gz
+*.bin
+*.exe
+tmp/
+temp/
+
+# Submodules live under tools/ and workspace/
+# We only ignore common build artifacts inside them.
+tools/**/node_modules/
+tools/**/dist/
+tools/**/build/
+tools/**/target/
+tools/**/.next/
+tools/**/cache/
+!tools/.gitkeep
+
+# Damn Vulnerable DeFi (submodule) generated artifacts only
+workspace/damn-vulnerable-defi/cache/
+workspace/damn-vulnerable-defi/out/
+workspace/damn-vulnerable-defi/broadcast/
+workspace/damn-vulnerable-defi/node_modules/

@@ -1,0 +1,18 @@
+# Submodules must be checked out with proper line endings
+.gitmodules          text
+*.sh                 text eol=lf
+*.py                 text eol=lf
+*.json               text eol=lf
+*.toml               text eol=lf
+*.md                 text eol=lf
+
+# Binary safety
+*.png    binary
+*.jpg    binary
+*.gif    binary
+*.ico    binary
+*.pdf    binary
+
+# Foundry artifacts (large & noisy)
+*.abi    binary
+*.bin    binary
