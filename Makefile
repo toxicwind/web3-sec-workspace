@@ -18,6 +18,7 @@ help:
 	@echo "  \033[0;32mmake start\033[0m           Drop into activated environment shell"
 	@echo "  \033[0;32mmake lint TARGET=dir\033[0m Run all static analyzers on target"
 	@echo "  \033[0;32mmake audit TARGET=dir\033[0m Alias for lint"
+	@echo "  \033[0;32mmake fang TARGET=dir\033[0m  Sovereign AI audit via local OpenFang + vLLM (AGENT=...)"
 	@echo "  \033[0;32mmake submodules\033[0m      Re-init / update all git submodules"
 	@echo "  \033[0;32mmake update-tools\033[0m    Pull latest commits for all submodules"
 	@echo "  \033[0;32mmake doctor\033[0m          Quick environment health check"
@@ -40,6 +41,13 @@ lint audit:
 		exit 1; \
 	fi
 	@$(PYTHON) $(LINT_SCRIPT) $(TARGET) || true
+
+fang ai-audit:
+	@if [ -z "$(TARGET)" ]; then \
+		echo -e "\033[1;33mUsage: make fang TARGET=path/to/solidity/project [AGENT=security-auditor]\033[0m"; \
+		exit 1; \
+	fi
+	@$(PYTHON) $(WORKSPACE_ROOT)/bin/audit_fang.py $(TARGET) --agent $${AGENT:-security-auditor} || true
 
 submodules:
 	@git submodule update --init --recursive --depth 1 --jobs 4

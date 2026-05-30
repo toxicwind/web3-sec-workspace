@@ -42,10 +42,10 @@ echo "    forge test                      # Foundry (after cd workspace/...)"
 echo "    echidna <contract> --config ... # Property-based fuzzer"
 echo "    medusa ...                      # Go-based fuzzer"
 echo
-echo "  AI / Specialized"
+echo "  AI / Specialized (Sovereign stack)"
 echo "    docker run --rm -v \$PWD:/contracts ghcr.io/alt-research/solidityguard:latest scan /contracts"
-echo "    agentarc analyze --address 0x... --chain eth"
-echo "    miesc scan 0x..."
+echo "    python bin/audit_fang.py <target> --agent security-auditor   # your local OpenFang + vLLM"
+echo "    make fang TARGET=... AGENT=solidity-security-auditor"
 echo
 echo "  Workspace"
 echo "    cd workspace/damn-vulnerable-defi && forge install && forge test"

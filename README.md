@@ -41,7 +41,7 @@ Most audit stacks are fragmented, cloud-dependent, or require 11 different GitHu
 
 ---
 
-## Audit Pipeline (Mermaid)
+## Audit Pipeline (Classical + Sovereign AI)
 
 ```mermaid
 flowchart LR
@@ -55,8 +55,8 @@ flowchart LR
     G -->|Medusa| I[Go Fuzzer]
     G -->|Foundry Invariants| J[forge test --invariant]
     
-    K[AI / On-chain] -->|Krait + RugProof| L[Local AI Heuristics]
-    K -->|AgentARC + MIESC| M[Address Scanners]
+    K[Sovereign AI] -->|OpenFang security-auditor + solidity-security-auditor| L[Your local vLLM models]
+    K -->|Krait / RugProof heuristics (optional)| M[Local pattern matching]
     K -->|Honeypotscan| N[Token Safety]
     
     C & D & E & F & H & I & J & L & M & N --> O[reports/]
@@ -78,11 +78,10 @@ flowchart LR
 | Fuzzing           | **Medusa**            | Go fuzzer             | `medusa fuzz`                                | High throughput |
 | Dev / Testing     | **Foundry**           | forge/cast/anvil      | `forge test --invariant`                     | Mandatory |
 | Symbolic          | **Mythril**           | Symbolic execution    | `myth analyze contract.sol`                  | Via venv |
-| On-chain Intel    | **AgentARC**          | AI address analysis   | `agentarc analyze --address 0x..`            | Python |
-| On-chain Intel    | **MIESC**             | Multi-agent scanner   | `miesc scan 0x...`                           | Python |
+| Sovereign AI      | **OpenFang + vLLM**   | Your local agent OS   | `python bin/audit_fang.py . --agent security-auditor` | See ai/agents/ + ~/.openfang |
 | Token Safety      | **honeypotscan**      | Honeypot / rug        | `cd tools/honeypotscan && npm run dev`       | Built from submodule |
-| AI Heuristics     | **Krait**             | Local AI patterns     | (see tools/krait)                            | ZealynxSecurity |
-| Rug Detection     | **RugProof**          | Rug pull heuristics   | (see tools/RugProof)                         | Community |
+| Sovereign AI Core | **OpenFang + vLLM**   | Your local agent OS   | `python bin/audit_fang.py . --agent security-auditor` | Fully local (port 14720) |
+| Heuristics        | **Krait / RugProof**  | Optional pattern libs | (see tools/krait, tools/RugProof)            | Submodules |
 | Query             | **solql**             | Solidity query lang   | *(upstream unavailable at 2026 creation)*    | See tools/solql/README.md |
 
 ---
@@ -118,6 +117,35 @@ web3-sec-workspace/
 
 ---
 
+## Sovereign AI Layer (OpenFang + vLLM)
+
+This workspace is designed as a **companion** to your existing sovereign stack rather than pulling in random third-party AI scanners.
+
+- Your running `security-auditor` agent (and the workspace-seeded `solidity-security-auditor`) are the primary AI reviewers.
+- They talk to whatever model(s) you are currently serving with vLLM (currently Qwen2.5 on port 14718 in your environment).
+- Classical tools (Slither, Aderyn, Foundry, Echidna...) still run locally and their output can be fed as context into the agents.
+
+### Quick AI Audit
+
+```bash
+python bin/audit_fang.py workspace/damn-vulnerable-defi --agent security-auditor
+# or the nicer Makefile target
+make fang TARGET=workspace/damn-vulnerable-defi AGENT=solidity-security-auditor
+```
+
+Findings are written to `reports/fang_*.md`.
+
+### Bringing the better Solidity agent into your main OpenFang
+
+```bash
+cp -r ai/agents/solidity-security-auditor ~/.openfang/agents/
+openfang agent spawn ~/.openfang/agents/solidity-security-auditor/agent.toml
+```
+
+The prompt is heavily tuned for EVM/DeFi realities (flash loans, read-only reentrancy, storage collisions, custom accounting, etc.) and expects prior classical tool output.
+
+---
+
 ## Installation (Full Sovereign Path)
 
 ### 1. Clone with submodules (critical)
@@ -140,7 +168,8 @@ cd ~/web3-sec-workspace
 
 This runs the modular layers in order:
 - System packages (pacman-first, best-effort on Debian)
-- Python venv + Slither / Mythril / AgentARC / MIESC
+- Python venv + Slither / Mythril
+- Sovereign AI integration with your running OpenFang + vLLM (security-auditor + custom solidity agent)
 - Foundry + Echidna + Medusa
 - Docker images (SolidityGuard)
 - Submodule checkout + post-build for TS tools
@@ -210,7 +239,7 @@ Edit once, benefit everywhere.
 
 ## Philosophy & Design Principles
 
-1. **Everything local** — no contract source ever touches a third-party SaaS unless you explicitly run an on-chain scanner against a public address.
+1. **Everything local** — no contract source ever touches a third-party SaaS. AI reviews go through your own OpenFang + vLLM stack.
 2. **Reproducible** — submodules + pinned versions + declarative configs.
 3. **Composable** — the `lint_all.py` aggregator + Makefile make the whole system feel like one tool.
 4. **Idempotent & fast to re-enter** — `make doctor` and `./setup.sh` are safe to run any time.
@@ -247,7 +276,7 @@ This workspace stands on the shoulders of:
 - [Cyfrin](https://github.com/Cyfrin) — Aderyn
 - [OpenZeppelin](https://github.com/OpenZeppelin) — Damn Vulnerable DeFi (educational masterpiece)
 - [Alt-Research](https://github.com/alt-research) — SolidityGuard
-- All the individual researchers behind Krait, RugProof, honeypotscan, Medusa, AgentARC, MIESC, Solhint, and the many other tools in this stack (solql upstream was unavailable at assembly time)
+- All the individual researchers behind Krait, RugProof, honeypotscan, Medusa, Solhint, and the many other tools in this stack (plus the OpenFang project itself for the sovereign agent layer) (solql upstream was unavailable at assembly time)
 
 Special thanks to the Arch Linux security community and everyone building local-first tooling in 2025–2026.
 

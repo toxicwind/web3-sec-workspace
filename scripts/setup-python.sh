@@ -21,14 +21,15 @@ source "${VENV_DIR}/bin/activate"
 log_info "Upgrading pip + core build tools..."
 pip install --upgrade pip setuptools wheel --quiet
 
-# Core static + dynamic analysis
-log_info "Installing Slither, Mythril, and AI companions (this may take a while)..."
+# Core static + dynamic analysis (classical tools only)
+log_info "Installing Slither + Mythril (classical analysis)..."
 pip install --upgrade \
   slither-analyzer \
   slither-analyzer[evm] \
   mythril \
-  agentarc[all] \
-  miesc[full] \
-  --quiet 2>/dev/null || log_warn "Some Python packages may have optional dep issues (common with heavy security tools)"
+  --quiet 2>/dev/null || log_warn "Some Python packages may have optional dep issues"
+
+log_dim "  Sovereign AI (OpenFang + vLLM) integration is handled by setup-sovereign-ai.sh"
+log_dim "  Generic third-party AI scanners (agentarc, miesc, etc.) are intentionally skipped."
 
 log_success "Python environment ready (source venv/bin/activate to use)"

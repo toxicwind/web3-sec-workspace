@@ -38,6 +38,7 @@ bash "$SCRIPT_DIR/scripts/setup-python.sh"
 bash "$SCRIPT_DIR/scripts/setup-fuzzers.sh"
 bash "$SCRIPT_DIR/scripts/setup-docker.sh"
 bash "$SCRIPT_DIR/scripts/setup-submodules.sh"
+bash "$SCRIPT_DIR/scripts/setup-sovereign-ai.sh"
 
 echo
 log_success "═══════════════════════════════════════════════════════════════"
@@ -48,6 +49,7 @@ log_info "Next steps:"
 echo "  1. (Recommended) log out and back in so docker group takes effect"
 echo "  2. cd ~/web3-sec-workspace && ./start.sh"
 echo "  3. Try: python bin/lint_all.py workspace/damn-vulnerable-defi"
-echo "  4. Or: make help"
+echo "  4. Try: python bin/audit_fang.py workspace/damn-vulnerable-defi --agent security-auditor"
+echo "  5. Or: make help"
 echo
-log_dim "All heavy tools (Slither, Aderyn, Foundry, Echidna, Mythril, AI scanners) are now available."
+log_dim "Classical tools (Slither, Aderyn, Foundry, Echidna...) + your local OpenFang + vLLM sovereign AI stack are ready."
