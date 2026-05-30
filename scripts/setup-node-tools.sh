@@ -25,13 +25,8 @@ if [ -d "$HONEYPOT_DIR" ]; then
   fi
 fi
 
-# solql
-SOLQL_DIR="$WORKSPACE_ROOT/tools/solql"
-if [ -d "$SOLQL_DIR" ]; then
-  if [ -f "$SOLQL_DIR/package.json" ]; then
-    log_info "Building solql + linking..."
-    (cd "$SOLQL_DIR" && npm install --silent && npm run build --if-present && npm link --silent 2>/dev/null) || log_warn "solql build/link had issues"
-  fi
-fi
+# solql intentionally omitted — upstream (0xJasonn/solql) unavailable at workspace creation time.
+# If the repository returns, re-add as: git submodule add https://github.com/0xJasonn/solql.git tools/solql
+log_dim "  solql: upstream not present (see tools/solql/README.md if created)"
 
 log_success "Node tooling layer ready"

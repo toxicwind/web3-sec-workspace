@@ -1,0 +1,12 @@
+[submodule "tools/krait"]
+	path = tools/krait
+	url = https://github.com/ZealynxSecurity/krait.git
+[submodule "tools/RugProof"]
+	path = tools/RugProof
+	url = https://github.com/omermaksutii/RugProof.git
+[submodule "tools/honeypotscan"]
+	path = tools/honeypotscan
+	url = https://github.com/Teycir/honeypotscan.git
+[submodule "workspace/damn-vulnerable-defi"]
+	path = workspace/damn-vulnerable-defi
+	url = https://github.com/OpenZeppelin/damn-vulnerable-defi.git

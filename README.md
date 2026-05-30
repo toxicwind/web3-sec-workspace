@@ -83,7 +83,7 @@ flowchart LR
 | Token Safety      | **honeypotscan**      | Honeypot / rug        | `cd tools/honeypotscan && npm run dev`       | Built from submodule |
 | AI Heuristics     | **Krait**             | Local AI patterns     | (see tools/krait)                            | ZealynxSecurity |
 | Rug Detection     | **RugProof**          | Rug pull heuristics   | (see tools/RugProof)                         | Community |
-| Query             | **solql**             | Solidity query lang   | `solql ...` (after npm link)                 | 0xJasonn |
+| Query             | **solql**             | Solidity query lang   | *(upstream unavailable at 2026 creation)*    | See tools/solql/README.md |
 
 ---
 
@@ -105,7 +105,7 @@ web3-sec-workspace/
 │   ├── krait/
 │   ├── RugProof/
 │   ├── honeypotscan/
-│   └── solql/
+│   └── solql/              # placeholder (upstream unavailable at creation)
 ├── workspace/
 │   └── damn-vulnerable-defi/   # Practice CTF target (submodule)
 ├── reports/                 # Gitignored — your findings live here
@@ -247,7 +247,7 @@ This workspace stands on the shoulders of:
 - [Cyfrin](https://github.com/Cyfrin) — Aderyn
 - [OpenZeppelin](https://github.com/OpenZeppelin) — Damn Vulnerable DeFi (educational masterpiece)
 - [Alt-Research](https://github.com/alt-research) — SolidityGuard
-- All the individual researchers behind Krait, RugProof, honeypotscan, solql, Medusa, AgentARC, MIESC, and Solhint
+- All the individual researchers behind Krait, RugProof, honeypotscan, Medusa, AgentARC, MIESC, Solhint, and the many other tools in this stack (solql upstream was unavailable at assembly time)
 
 Special thanks to the Arch Linux security community and everyone building local-first tooling in 2025–2026.
 
