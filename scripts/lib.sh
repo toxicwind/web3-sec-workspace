@@ -8,7 +8,6 @@ set -euo pipefail
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 MAGENTA='\033[0;35m'
 BOLD='\033[1m'
@@ -65,7 +64,9 @@ install_pkg() {
       ;;
     debian)
       log_warn "Debian/Ubuntu detected — using apt (best effort)"
-      sudo apt-get update -qq && sudo apt-get install -y "$pkg" 2>/dev/null || log_warn "Could not install $pkg via apt"
+      if ! sudo apt-get update -qq && sudo apt-get install -y "$pkg" 2>/dev/null; then
+        log_warn "Could not install $pkg via apt"
+      fi
       ;;
     *)
       log_warn "Unknown distro. Please install $pkg manually."

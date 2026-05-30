@@ -6,7 +6,6 @@ source "$(dirname "$0")/lib.sh"
 log_step "Python virtual environment & audit packages"
 
 VENV_DIR="$(cd "$(dirname "$0")/.." && pwd)/venv"
-PYTHON_BIN="${VENV_DIR}/bin/python"
 
 if [ ! -d "$VENV_DIR" ]; then
   log_info "Creating Python venv at $VENV_DIR"

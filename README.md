@@ -335,3 +335,17 @@ MIT © 2026 toxicwind
 <p align="center">
   <strong>Build sovereign. Audit privately. Ship with confidence.</strong>
 </p>
+
+## Sovereign Secrets & MCP Stack (Finalized 2026-05)
+
+- All secrets consolidated into `~/.grok/.secrets` (single source, no dupes/placeholders).
+- Sources joined from: genesis graveyard template, sovereign_*_20260521_*.txt (keys_broad, secrets, full, recon), deep harvester parts, live .env from sovereign_array/control_center/maximal.
+- Real keys: TELEGRAM_BOT_TOKEN, sovereign_mesh SECRET_KEY variants, CONTEXT7_API_KEY (ctx7sk-...), plus full LLM/search/TTS set.
+- OpenFang agents: Converted graveyard ones (aria, sage, diagnostic) + solidity-security-auditor + stock (34 total, running on vLLM 14718).
+- MCP integrations: .grok ones (github, linear, sovereign-playwright-fork) + built-in (github/linear etc.) + custom (Serena for code editing, Context7 for context, Emergent harvesters).
+- Services cleaned: Red herrings (OpenClaw gateway, experimental armaraos/frona/oxios etc.) moved to graveyard-services/; canonical OpenFang (14720), vLLM (14718 root), Caddy landing (14719) remain.
+- Autonomous: Cron/triggers via OpenFang for agents (e.g. diagnostic log scans).
+- Test: Serena/Context7 MCPs invocable with keys from .secrets; agents respond.
+
+See `~/.grok/.secrets` (0600) and `openfang agent list` / `openfang mcp`.
+
