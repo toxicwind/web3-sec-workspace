@@ -9,7 +9,7 @@ VENV := $(WORKSPACE_ROOT)/venv
 PYTHON := $(VENV)/bin/python
 LINT_SCRIPT := $(WORKSPACE_ROOT)/bin/lint_all.py
 
-.PHONY: help setup start lint audit clean submodules update-tools doctor
+.PHONY: help setup start lint audit clean submodules update-tools doctor verify test
 
 help:
 	@echo -e "\033[0;36mweb3-sec-workspace — Sovereign Audit Lab (2026)\033[0m"
@@ -72,3 +72,8 @@ doctor:
 clean:
 	@rm -rf reports/* logs/* 2>/dev/null || true
 	@echo "Cleaned reports and logs (venv preserved)"
+
+verify test:
+	@./scripts/verify.sh $(if $(STRICT),--strict,)
+	@echo
+	@echo "Run 'make verify STRICT=1' for stricter checking"
