@@ -1,0 +1,68 @@
+# CodeQL Advanced Security Analysis
+# Part of the sovereign web3-sec-workspace GHAS integration
+name: "CodeQL Advanced Security"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    # Run weekly on Sunday at 06:00 UTC for continuous security monitoring
+    - cron: '0 6 * * 0'
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'python', 'javascript-typescript' ]
+        # Note: Native CodeQL Solidity support is limited.
+        # For strong Solidity analysis we recommend combining with:
+        # - Slither (already in this workspace)
+        # - Aderyn
+        # - Community CodeQL packs for Solidity when available
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Better results for security analysis
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          # Enable extended queries for better security coverage
+          queries: security-extended,security-and-quality
+
+      - name: Autobuild (if needed)
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+          # Upload results to GitHub Advanced Security
+          upload: true
+
+  # Optional: Secret scanning is enabled at the repository level via GHAS.
+  # This job demonstrates using the workspace's own secret scanning helper.
+  secret-scan-demo:
+    name: Secret Scanning Demo (local tool)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run local secret scan (demonstration)
+        run: |
+          echo "This step can invoke bin/ghas.sh secret-scan or equivalent"
+          echo "Real secret scanning is performed by GitHub Advanced Security at repository level"

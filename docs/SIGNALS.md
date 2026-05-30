@@ -86,13 +86,31 @@ python ../../bin/audit_fang.py /path/to/suspicious --agent solidity-security-aud
 
 ---
 
-## 六、与 Sovereign AI（OpenFang + vLLM）的整合
+## 六、与 Sovereign AI（OpenFang + vLLM）的整合 + GHAS
 
 所有“🧠”层分析最终都应路由到你本地运行的 `security-auditor` 或 `solidity-security-auditor` agent。
 
 - 古典工具输出（Slither/Aderyn/Foundry）自动或手动喂给 Fang 作为上下文。
 - 蜜罐/MEV 信号 → 结构化 prompt → Fang 进行经济攻击建模。
 - 新发现的 2026 工具/漏洞模式 → 持续更新 `ai/agents/solidity-security-auditor/agent.toml` 的 system prompt。
+
+### 额外集成：GitHub Advanced Security (GHAS)
+
+本工作区已添加完整 GHAS 配置：
+
+- `.github/dependabot.yml` — 自动依赖更新
+- `.github/workflows/codeql.yml` — CodeQL 代码扫描（Python + JS/TS + 预留 Solidity 扩展）
+- `bin/ghas.sh` — 本地 GHAS 助手脚本
+
+运行示例：
+```bash
+./bin/ghas.sh alerts
+./bin/ghas.sh secret-scan setup.sh bin/ghas.sh
+./bin/ghas.sh code-scan
+./bin/ghas.sh enable          # 显示如何在 GitHub 上开启完整 GHAS
+```
+
+GHAS 的 secret scanning 能力可通过 MCP 工具 `grok_com_github__run_secret_scanning` 直接调用（需仓库开启 GHAS 后效果最佳）。
 
 ---
 

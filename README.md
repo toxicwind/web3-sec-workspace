@@ -117,9 +117,16 @@ web3-sec-workspace/
 
 ---
 
-## Sovereign AI Layer (OpenFang + vLLM)
+## Sovereign AI Layer (OpenFang + vLLM) + GitHub Advanced Security
 
 This workspace is designed as a **companion** to your existing sovereign stack rather than pulling in random third-party AI scanners.
+
+Additional integration: Full **GitHub Advanced Security (GHAS)** support has been added using the available `grok_com_github` MCP tooling (including `run_secret_scanning`).
+
+See:
+- `.github/workflows/codeql.yml`
+- `.github/dependabot.yml`
+- `bin/ghas.sh` (convenient local wrapper)
 
 - Your running `security-auditor` agent (and the workspace-seeded `solidity-security-auditor`) are the primary AI reviewers.
 - They talk to whatever model(s) you are currently serving with vLLM (currently Qwen2.5 on port 14718 in your environment).

@@ -1,0 +1,44 @@
+# Dependabot configuration for web3-sec-workspace
+# Keeps dependencies updated as part of GitHub Advanced Security hygiene
+
+version: 2
+updates:
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  # Python (pip)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # Node.js (npm) - used by honeypotscan and solql submodules
+  - package-ecosystem: "npm"
+    directory: "/tools/honeypotscan"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: "npm"
+    directory: "/tools/solql"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+
+  # Rust (Cargo) - for any future Rust components or OpenFang related
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
