@@ -23,6 +23,10 @@ log_info "Distro: $(detect_distro)"
 echo
 
 # --- Pre-flight ---
+if [ "${1:-}" = "--verify" ] || [ "${1:-}" = "verify" ]; then
+  exec ./scripts/verify.sh --strict
+fi
+
 if [ ! -d "scripts" ] || [ ! -d "config" ]; then
   log_error "This does not look like the web3-sec-workspace root. Aborting."
   exit 1
