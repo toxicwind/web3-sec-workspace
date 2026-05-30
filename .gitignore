@@ -48,12 +48,19 @@ Cargo.lock
 Thumbs.db
 
 # Secrets (never ever)
+# Real env files are forbidden. .env.example (and .env.*.example) are allowed as templates.
 .env
-.env.*
+.env.local
+.env.*.local
+.env.*.local.*
 *.pem
 *.key
 secrets/
 .grok/.secrets
+
+# Allow documented example templates (but nothing else that starts with .env)
+!.env.example
+!.env.*.example
 
 # Temp & large binaries
 *.zip

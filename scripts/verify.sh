@@ -72,6 +72,7 @@ check "ai/solidity agent"          "[ -f ai/agents/solidity-security-auditor/age
 check "docs/SIGNALS.md"            "[ -f docs/SIGNALS.md ]"
 check "bin/ghas.sh"                "[ -f bin/ghas.sh ]"
 check "scripts/verify.sh"          "[ -f scripts/verify.sh ]"
+check ".env.example (secrets template)" "[ -f .env.example ]"
 
 echo
 echo "=== Executable Permissions ==="
@@ -86,6 +87,48 @@ check "make help"                  "make help >/dev/null 2>&1"
 check "bin/ghas.sh"                "./bin/ghas.sh 2>&1 | grep -q 'Usage:'"
 check "bin/audit_fang.py --help"   "python3 bin/audit_fang.py --help 2>&1 | grep -qi 'sovereign ai' || true"
 check "bin/lint_all.py --help"     "python3 bin/lint_all.py --help 2>&1 | grep -q 'Usage:' || true"
+
+echo
+echo "=== Secrets Hygiene (no leaks, proper .env hygiene) ==="
+# 1. No real .env should exist at root (only the example)
+if [ -f .env ]; then
+  echo -e "  [ ] ${RED}FAIL${NC} .env file must not exist at root (use .env.example)"
+  FAIL=$((FAIL + 1))
+else
+  echo -e "  [ ] ${GREEN}PASS${NC} no stray .env file at root"
+  PASS=$((PASS + 1))
+fi
+
+# 2. .env must not be tracked in git
+if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+  echo -e "  [ ] ${RED}FAIL${NC} .env is tracked in git (should be gitignored)"
+  FAIL=$((FAIL + 1))
+else
+  echo -e "  [ ] ${GREEN}PASS${NC} .env is not tracked in git"
+  PASS=$((PASS + 1))
+fi
+
+# 3. .env.example must exist (and should be committed)
+check ".env.example present" "[ -f .env.example ]"
+
+# 4. Heuristic scan for 64-hex private-key-like strings in source (not artifacts)
+#    This is intentionally noisy on bytecode but we limit scope.
+if command -v grep >/dev/null 2>&1; then
+  # Only look in plausible source locations, exclude obvious compiled / test data / node
+  SUSPICIOUS=$(grep -r -E -o '\b[0-9a-fA-F]{64}\b' \
+    --include='*.sh' --include='*.py' --include='*.ts' --include='*.js' \
+    --include='*.toml' --include='*.yaml' --include='*.yml' \
+    --exclude-dir=out --exclude-dir=out-nft --exclude-dir=build --exclude-dir=cache \
+    --exclude-dir=node_modules --exclude-dir=venv --exclude-dir=.git \
+    --exclude-dir=reports --exclude-dir=logs --exclude-dir=workspace \
+    . 2>/dev/null | grep -v -E '(bytecode|deployedBytecode|sourceMap|0x[0-9a-fA-F]{64})' | wc -l | tr -d ' ')
+  if [ "$SUSPICIOUS" -gt 0 ]; then
+    echo -e "  [ ] ${YELLOW}WARN${NC} $SUSPICIOUS potential 64-hex strings in source (review manually)"
+  else
+    echo -e "  [ ] ${GREEN}PASS${NC} no obvious private-key-like hex strings in source files"
+    PASS=$((PASS + 1))
+  fi
+fi
 
 echo
 echo -e "${CYAN}=== Results ===${NC}"
