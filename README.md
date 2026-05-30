@@ -196,7 +196,15 @@ make lint TARGET=workspace/damn-vulnerable-defi
 python bin/lint_all.py workspace/damn-vulnerable-defi
 ```
 
-Reports land in `reports/` with both structured (JSON) and human (Markdown) artifacts plus raw `.log` files for every engine.
+Reports land in `reports/`.
+
+### Sovereign AI + Zero-Day Signal Hunting
+
+```bash
+make fang TARGET=workspace/damn-vulnerable-defi -- AGENT=solidity-security-auditor
+```
+
+See the full **🧠 终极整合** vision, exploitation matrix, 2026 tools list, and signal trapping concepts in **[docs/SIGNALS.md](docs/SIGNALS.md)**. This is the heart of the 2026 platform.
 
 ### Work on a real protocol
 
@@ -239,11 +247,12 @@ Edit once, benefit everywhere.
 
 ## Philosophy & Design Principles
 
-1. **Everything local** — no contract source ever touches a third-party SaaS. AI reviews go through your own OpenFang + vLLM stack.
+1. **Everything local & sovereign** — no contract source ever touches a third-party SaaS. All AI reasoning runs through your own OpenFang + vLLM stack (🧠).
 2. **Reproducible** — submodules + pinned versions + declarative configs.
-3. **Composable** — the `lint_all.py` aggregator + Makefile make the whole system feel like one tool.
-4. **Idempotent & fast to re-enter** — `make doctor` and `./setup.sh` are safe to run any time.
-5. **Arch-native but not Arch-only** — pacman is first-class; Debian/Ubuntu paths exist for convenience.
+3. **Composable** — classical tools + `lint_all.py` + `audit_fang.py` + Makefile feel like one unified platform.
+4. **Dynamic & fast on re-runs** — second and subsequent `./setup.sh` or `make setup` are near-instant (smart guards everywhere).
+5. **Zero-day signal hunting ready** — see [docs/SIGNALS.md](docs/SIGNALS.md) for the full 2026 exploitation matrix, cost/risk table, and trapping pipeline vision.
+6. **Arch-native but not Arch-only** — pacman is first-class; Debian/Ubuntu paths exist for convenience.
 
 ---
 

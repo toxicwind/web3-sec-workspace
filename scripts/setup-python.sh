@@ -18,16 +18,27 @@ fi
 # shellcheck disable=SC1091
 source "${VENV_DIR}/bin/activate"
 
-log_info "Upgrading pip + core build tools..."
+log_info "Upgrading pip + core build tools (idempotent)..."
 pip install --upgrade pip setuptools wheel --quiet
 
-# Core static + dynamic analysis (classical tools only)
-log_info "Installing Slither + Mythril (classical analysis)..."
-pip install --upgrade \
-  slither-analyzer \
-  slither-analyzer[evm] \
-  mythril \
-  --quiet 2>/dev/null || log_warn "Some Python packages may have optional dep issues"
+# Core static + dynamic analysis (classical tools only) - smart check
+NEED_PYTHON_REINSTALL=0
+for pkg in slither-analyzer mythril; do
+  if ! python -c "import ${pkg%%-*}" 2>/dev/null && ! python -c "import ${pkg}" 2>/dev/null; then
+    NEED_PYTHON_REINSTALL=1
+  fi
+done
+
+if [ "$NEED_PYTHON_REINSTALL" = "1" ]; then
+  log_info "Installing/upgrading Slither + Mythril (classical analysis)..."
+  pip install --upgrade \
+    slither-analyzer \
+    slither-analyzer[evm] \
+    mythril \
+    --quiet 2>/dev/null || log_warn "Some Python packages may have optional dep issues"
+else
+  log_dim "  Slither + Mythril already present in venv"
+fi
 
 log_dim "  Sovereign AI (OpenFang + vLLM) integration is handled by setup-sovereign-ai.sh"
 log_dim "  Generic third-party AI scanners (agentarc, miesc, etc.) are intentionally skipped."

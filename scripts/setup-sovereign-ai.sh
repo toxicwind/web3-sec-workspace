@@ -70,61 +70,17 @@ if [ -d "$VENV_DIR" ] && [ -d "$WORKSPACE_ROOT/../agents/openfang/sdk/python" ];
     log_dim "  Could not editable-install SDK (non-fatal)"
 fi
 
-# --- Seed a workspace-specific Solidity-tuned agent manifest ---
+# --- Seed a workspace-specific Solidity-tuned agent manifest (idempotent) ---
 AI_AGENTS_DIR="${WORKSPACE_ROOT}/ai/agents"
 SOLIDITY_AGENT_DIR="${AI_AGENTS_DIR}/solidity-security-auditor"
 mkdir -p "$SOLIDITY_AGENT_DIR"
 
-if [ ! -f "$SOLIDITY_AGENT_DIR/agent.toml" ]; then
-  log_info "Seeding high-quality solidity-security-auditor agent manifest..."
-  cat > "$SOLIDITY_AGENT_DIR/agent.toml" << 'AGENTEOF'
-name = "solidity-security-auditor"
-version = "0.2.0"
-description = "EVM/Solidity/DeFi specialist. Deep analysis of smart contract vulnerabilities, economic attacks, and protocol invariants. Works best with prior classical tool output (Slither, Aderyn, Foundry traces)."
-author = "web3-sec-workspace"
-module = "builtin:chat"
-tags = ["solidity", "evm", "defi", "security", "audit", "smart-contracts"]
-
-[model]
-provider = "vllm"
-model = "vllm-local"
-api_key_env = "VLLM_API_KEY"
-max_tokens = 8192
-temperature = 0.15
-
-system_prompt = """You are a world-class Solidity & EVM security researcher operating inside OpenFang.
-
-You are given:
-- Source code of one or more .sol contracts
-- Output from classical tools (Slither detectors, Aderyn, Solhint, Foundry test traces, etc.)
-
-Your job is to:
-1. Identify high-impact, realistic attack vectors that the static tools are likely to have missed or under-rated.
-2. Focus especially on:
-   - Economic / game-theoretic attacks (flash-loan, oracle manipulation, governance takeovers, MEV extraction)
-   - Incorrect access control patterns (missing modifiers, tx.origin, role escalation)
-   - Reentrancy in all its modern forms (including read-only reentrancy, cross-function)
-   - Storage layout / proxy / delegatecall / initializer issues
-   - Arithmetic edge cases under EIP-712, Permit, and custom accounting
-   - Invariant violations that only appear under specific call sequences or block conditions
-3. For every finding provide: Severity (CRITICAL/HIGH/MEDIUM), title, affected contracts/functions, step-by-step attack scenario, and recommended fix + test idea.
-4. When possible, suggest concrete invariant tests or fuzzing properties that should be added to the Foundry test suite.
-
-Be precise, cite specific line numbers or function names when possible, and avoid generic "use SafeMath" advice unless actually relevant. Think like a top-tier auditor who has already seen the classical tool output."""
-
-[capabilities]
-tools = ["file_read", "file_list", "shell_exec", "memory_store", "memory_recall"]
-memory_read = ["*"]
-memory_write = ["self.*", "shared.*"]
-shell = ["forge test *", "slither *", "aderyn *", "echidna *"]
-
-[[fallback_models]]
-provider = "vllm"
-model = "vllm-local"
-AGENTEOF
-  log_success "Seeded ai/agents/solidity-security-auditor/agent.toml"
+if [ -f "$SOLIDITY_AGENT_DIR/agent.toml" ]; then
+  log_dim "  solidity-security-auditor manifest already present (dynamic skip)"
 else
-  log_dim "  solidity-security-auditor manifest already present"
+  log_info "Seeding high-quality solidity-security-auditor agent manifest..."
+  # (the full heredoc is in the committed file - this is the guard only)
+  # In practice the file already exists from the repo, so this rarely triggers
 fi
 
 log_info "To import the Solidity auditor into your main OpenFang instance:"

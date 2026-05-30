@@ -10,8 +10,12 @@ if ! command_exists docker; then
   exit 1
 fi
 
-log_info "Pulling SolidityGuard (Alt-Research)..."
-docker pull ghcr.io/alt-research/solidityguard:latest || log_warn "SolidityGuard pull failed (network or auth?)"
+if docker images | grep -q "solidityguard"; then
+  log_dim "  SolidityGuard Docker image already present"
+else
+  log_info "Pulling SolidityGuard (Alt-Research)..."
+  docker pull ghcr.io/alt-research/solidityguard:latest || log_warn "SolidityGuard pull failed (network or auth?)"
+fi
 
 # Future-proof: add more heavy images here (e.g. mythril docker variant, etc.)
 # docker pull trailofbits/echidna ...
