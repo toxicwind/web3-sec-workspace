@@ -9,25 +9,19 @@ VENV := $(WORKSPACE_ROOT)/venv
 PYTHON := $(VENV)/bin/python
 LINT_SCRIPT := $(WORKSPACE_ROOT)/bin/lint_all.py
 
-# Colors
-CYAN  := \033[0;36m
-GREEN := \033[0;32m
-YELLOW:= \033[1;33m
-NC    := \033[0m
-
 .PHONY: help setup start lint audit clean submodules update-tools doctor
 
 help:
-	@echo -e "$(CYAN)web3-sec-workspace — Sovereign Audit Lab (2026)$(NC)"
+	@echo -e "\033[0;36mweb3-sec-workspace — Sovereign Audit Lab (2026)\033[0m"
 	@echo
-	@echo "  $(GREEN)make setup$(NC)           Run full modular bootstrap (idempotent)"
-	@echo "  $(GREEN)make start$(NC)           Drop into activated environment shell"
-	@echo "  $(GREEN)make lint TARGET=dir$(NC) Run all static analyzers on target"
-	@echo "  $(GREEN)make audit TARGET=dir$(NC) Alias for lint"
-	@echo "  $(GREEN)make submodules$(NC)      Re-init / update all git submodules"
-	@echo "  $(GREEN)make update-tools$(NC)    Pull latest commits for all submodules"
-	@echo "  $(GREEN)make doctor$(NC)          Quick environment health check"
-	@echo "  $(GREEN)make clean$(NC)           Remove reports, logs, venv (keeps source)"
+	@echo "  \033[0;32mmake setup\033[0m           Run full modular bootstrap (idempotent)"
+	@echo "  \033[0;32mmake start\033[0m           Drop into activated environment shell"
+	@echo "  \033[0;32mmake lint TARGET=dir\033[0m Run all static analyzers on target"
+	@echo "  \033[0;32mmake audit TARGET=dir\033[0m Alias for lint"
+	@echo "  \033[0;32mmake submodules\033[0m      Re-init / update all git submodules"
+	@echo "  \033[0;32mmake update-tools\033[0m    Pull latest commits for all submodules"
+	@echo "  \033[0;32mmake doctor\033[0m          Quick environment health check"
+	@echo "  \033[0;32mmake clean\033[0m           Remove reports, logs, venv (keeps source)"
 	@echo
 	@echo "Examples:"
 	@echo "  make lint TARGET=workspace/damn-vulnerable-defi"
@@ -42,7 +36,7 @@ start:
 
 lint audit:
 	@if [ -z "$(TARGET)" ]; then \
-		echo -e "$(YELLOW)Usage: make lint TARGET=path/to/solidity/project$(NC)"; \
+		echo -e "\033[1;33mUsage: make lint TARGET=path/to/solidity/project\033[0m"; \
 		exit 1; \
 	fi
 	@$(PYTHON) $(LINT_SCRIPT) $(TARGET) || true
@@ -50,22 +44,22 @@ lint audit:
 submodules:
 	@git submodule update --init --recursive --depth 1 --jobs 4
 	@bash scripts/setup-node-tools.sh || true
-	@echo -e "$(GREEN)Submodules ready$(NC)"
+	@echo -e "\033[0;32mSubmodules ready\033[0m"
 
 update-tools:
-	@echo -e "$(CYAN)Updating all tool submodules to latest...$(NC)"
+	@echo -e "\033[0;36mUpdating all tool submodules to latest...\033[0m"
 	@git submodule update --remote --merge
 	@git submodule foreach 'git checkout main || git checkout master || true'
-	@echo -e "$(GREEN)Done. Review changes with 'git status'$(NC)"
+	@echo -e "\033[0;32mDone. Review changes with 'git status'\033[0m"
 
 doctor:
-	@echo -e "$(CYAN)Environment doctor...$(NC)"
+	@echo -e "\033[0;36mEnvironment doctor...\033[0m"
 	@command -v forge   && echo "  forge:   $$(forge --version 2>/dev/null | head -1)"   || echo "  forge:   MISSING"
 	@command -v slither && echo "  slither: $$(slither --version 2>/dev/null || echo '?')" || echo "  slither: MISSING"
 	@command -v aderyn  && echo "  aderyn:  present" || echo "  aderyn:  MISSING (cargo install)"
 	@command -v docker  && docker images | grep -q solidityguard && echo "  solidityguard: pulled" || echo "  solidityguard: not pulled"
 	@[ -d venv ] && echo "  venv:    present" || echo "  venv:    MISSING (run make setup)"
-	@echo -e "$(GREEN)Doctor complete$(NC)"
+	@echo -e "\033[0;32mDoctor complete\033[0m"
 
 clean:
 	@rm -rf reports/* logs/* 2>/dev/null || true
