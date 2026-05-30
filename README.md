@@ -112,10 +112,38 @@ web3-sec-workspace/
 ├── Makefile
 ├── setup.sh
 ├── start.sh
+├── .env.example             # Documented environment variables (copy to .env)
 └── .gitmodules
 ```
 
+## Configuration & Secrets
+
+This workspace is **secret-hygiene first**.
+
+- `.env` and all `.env.*` files are **gitignored** (see `.gitignore`).
+- Never commit real API keys, private keys, RPC credentials, or GitHub tokens.
+- A comprehensive template lives at **`.env.example`** at the root. Copy it:
+
+  ```bash
+  cp .env.example .env
+  # then edit .env with your values
+  ```
+
+Key variable families:
+- **Sovereign AI**: `OPENFANG_API`, `OPENFANG_BIN`, `VLLM_PORT`, `VLLM_API_KEY` (used by `bin/audit_fang.py` and the solidity-security-auditor agent).
+- **Blockchain data**: `ETHERSCAN_API_KEY` (and `_1` through `_6` for rate-limit pooling — used heavily by honeypotscan and GHAS tooling).
+- **GitHub**: `GITHUB_TOKEN` (for `bin/ghas.sh` and MCP secret scanning).
+
+Sub-tools may have additional `.env.example` files (e.g. `tools/honeypotscan/.env.example`). The root one is the single source of truth for shared values.
+
+See also:
+- `scripts/setup-sovereign-ai.sh` (how the local stack is detected)
+- `docs/SIGNALS.md`
+- `ai/agents/solidity-security-auditor/agent.toml`
+
 ---
+
+
 
 ## Sovereign AI Layer (OpenFang + vLLM) + GitHub Advanced Security
 
