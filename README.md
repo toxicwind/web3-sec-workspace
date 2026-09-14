@@ -1,6 +1,6 @@
 # web3-sec-workspace
 
-> **Private. Sovereign. 2026-grade.**  
+> **Public. Sovereign. 2026-grade.**  
 > A self-contained, reproducible smart contract security laboratory that lives entirely on your machine.
 
 <p align="center">
@@ -19,7 +19,7 @@
 ```bash
 git clone --recurse-submodules https://github.com/toxicwind/web3-sec-workspace.git ~/web3-sec-workspace
 cd ~/web3-sec-workspace
-./setup.sh          # one-time, idempotent, ~15–25 min
+./setup.sh          # one-time, idempotent (grab coffee on first run)
 ./start.sh          # drops you into the activated environment
 make lint TARGET=workspace/damn-vulnerable-defi
 ```
@@ -153,7 +153,6 @@ Additional integration: Full **GitHub Advanced Security (GHAS)** support has bee
 
 See:
 - `.github/workflows/codeql.yml`
-- `.github/dependabot.yml`
 - `bin/ghas.sh` (convenient local wrapper)
 
 - Your running `security-auditor` agent (and the workspace-seeded `solidity-security-auditor`) are the primary AI reviewers.
@@ -291,6 +290,15 @@ Edit once, benefit everywhere.
 
 ---
 
+### Verify & doctor
+
+```bash
+make doctor          # environment health check: forge, slither, aderyn, docker, venv
+make verify          # max-level workspace verification (scripts/verify.sh)
+make verify STRICT=1 # strict mode
+./setup.sh --verify  # run setup, then strict verification
+```
+
 ## Troubleshooting
 
 | Symptom                    | Fix |
@@ -308,7 +316,7 @@ Edit once, benefit everywhere.
 - Add a new static tool → drop a runner in `bin/lint_all.py` + config if needed
 - Add a new submodule → `git submodule add <url> tools/newthing`
 - New practice target → add another entry under `workspace/`
-- CI for your private audits → copy the pattern from `Makefile` into your own repo's GitHub Actions (never push this workspace itself)
+- CI for your own audits → copy the pattern from `Makefile` into your own repo's GitHub Actions
 
 ---
 
@@ -336,16 +344,20 @@ MIT © 2026 toxicwind
   <strong>Build sovereign. Audit privately. Ship with confidence.</strong>
 </p>
 
-## Sovereign Secrets & MCP Stack (Finalized 2026-05)
+## Sovereign Secrets & MCP Stack
 
-- All secrets consolidated into `~/.grok/.secrets` (single source, no dupes/placeholders).
-- Sources joined from: genesis graveyard template, sovereign_*_20260521_*.txt (keys_broad, secrets, full, recon), deep harvester parts, live .env from sovereign_array/control_center/maximal.
-- Real keys: TELEGRAM_BOT_TOKEN, sovereign_mesh SECRET_KEY variants, CONTEXT7_API_KEY (ctx7sk-...), plus full LLM/search/TTS set.
-- OpenFang agents: Converted graveyard ones (aria, sage, diagnostic) + solidity-security-auditor + stock (34 total, running on vLLM 14718).
-- MCP integrations: .grok ones (github, linear, sovereign-playwright-fork) + built-in (github/linear etc.) + custom (Serena for code editing, Context7 for context, Emergent harvesters).
-- Services cleaned: Red herrings (OpenClaw gateway, experimental armaraos/frona/oxios etc.) moved to graveyard-services/; canonical OpenFang (14720), vLLM (14718 root), Caddy landing (14719) remain.
-- Autonomous: Cron/triggers via OpenFang for agents (e.g. diagnostic log scans).
-- Test: Serena/Context7 MCPs invocable with keys from .secrets; agents respond.
+This repo is public, so the secrets discipline is described here in general
+terms only. Specific key names, values, prefixes, and machine-local secret
+paths do not belong in this README — or any commit.
 
-See `~/.grok/.secrets` (0600) and `openfang agent list` / `openfang mcp`.
-
+- One consolidated secrets store on the machine running the stack (mode 0600),
+  read by the workspace at runtime. Never committed, never pasted into docs,
+  issues, or chat.
+- Keys are grouped by family (messaging, mesh, context providers, LLM /
+  search / TTS) and consumed from that store by OpenFang agents and MCP
+  integrations — `openfang agent list` / `openfang mcp` shows what is wired.
+- Canonical local services: OpenFang (14720), vLLM (14718), Caddy landing
+  (14719). Keep experimental or red-herring services out of this set.
+- Autonomous agents run on cron/triggers via OpenFang (e.g. diagnostic log
+  scans).
+- Anything that ever touched a public surface gets rotated. No exceptions.
