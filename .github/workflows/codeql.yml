@@ -24,7 +24,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'python', 'javascript-typescript' ]
+        language: [ 'python' ]
+        # Note: javascript-typescript removed 2026-09-14: the repo has no
+        # analyzable JS/TS sources (CodeQL fails with 'no source code seen').
         # Note: Native CodeQL Solidity support is limited.
         # For strong Solidity analysis we recommend combining with:
         # - Slither (already in this workspace)
